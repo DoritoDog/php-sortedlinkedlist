@@ -2,6 +2,8 @@
 
 namespace SortedLinkedList;
 
+use InvalidArgumentException;
+
 /**
  * SortedLinkedList maintains elements in sorted order
  */
@@ -23,6 +25,11 @@ class SortedLinkedList
     private $comparator;
 
     /**
+     * @var string|null The type of data stored in the list ('integer' or 'string')
+     */
+    private $dataType;
+
+    /**
      * SortedLinkedList constructor
      *
      * @param callable|null $comparator Optional comparison function.
@@ -33,21 +40,39 @@ class SortedLinkedList
         $this->head = null;
         $this->size = 0;
         $this->comparator = $comparator;
+        $this->dataType = null;
     }
 
     /**
      * Insert a value into the sorted linked list
      *
-     * @param mixed $data The data to insert
+     * @param int|string $data The data to insert
      * @return void
+     * @throws InvalidArgumentException If data type doesn't match the list's type
      */
     public function insert($data): void
     {
+        // Enforce type consistency across the list
+        $currentType = gettype($data);
+
+        if ($this->dataType === null) {
+            // First insertion - set the type
+            $this->dataType = $currentType;
+        } elseif ($this->dataType !== $currentType) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'Cannot insert %s into list of %s. All elements must be of the same type.',
+                    $currentType,
+                    $this->dataType
+                )
+            );
+        }
+
         $newNode = new Node($data);
 
         // If list is empty or new node should be at the head
-        if ($this->head === null || $this->compare($data, $this->head->data) < 0) {
-            $newNode->next = $this->head;
+        if ($this->head === null || $this->compare($data, $this->head->getData()) < 0) {
+            $newNode->setNext($this->head);
             $this->head = $newNode;
             $this->size++;
             return;
@@ -55,13 +80,13 @@ class SortedLinkedList
 
         // Find the correct position to insert
         $current = $this->head;
-        while ($current->next !== null && $this->compare($current->next->data, $data) < 0) {
-            $current = $current->next;
+        while ($current->getNext() !== null && $this->compare($current->getNext()->getData(), $data) < 0) {
+            $current = $current->getNext();
         }
 
         // Insert the new node
-        $newNode->next = $current->next;
-        $current->next = $newNode;
+        $newNode->setNext($current->getNext());
+        $current->setNext($newNode);
         $this->size++;
     }
 
@@ -78,21 +103,21 @@ class SortedLinkedList
         }
 
         // If the head needs to be deleted
-        if ($this->compare($this->head->data, $data) === 0) {
-            $this->head = $this->head->next;
+        if ($this->compare($this->head->getData(), $data) === 0) {
+            $this->head = $this->head->getNext();
             $this->size--;
             return true;
         }
 
         // Search for the node to delete
         $current = $this->head;
-        while ($current->next !== null) {
-            if ($this->compare($current->next->data, $data) === 0) {
-                $current->next = $current->next->next;
+        while ($current->getNext() !== null) {
+            if ($this->compare($current->getNext()->getData(), $data) === 0) {
+                $current->setNext($current->getNext()->getNext());
                 $this->size--;
                 return true;
             }
-            $current = $current->next;
+            $current = $current->getNext();
         }
 
         return false;
@@ -108,7 +133,7 @@ class SortedLinkedList
     {
         $current = $this->head;
         while ($current !== null) {
-            $comparison = $this->compare($current->data, $data);
+            $comparison = $this->compare($current->getData(), $data);
             if ($comparison === 0) {
                 return true;
             }
@@ -116,7 +141,7 @@ class SortedLinkedList
             if ($comparison > 0) {
                 return false;
             }
-            $current = $current->next;
+            $current = $current->getNext();
         }
         return false;
     }
@@ -148,7 +173,7 @@ class SortedLinkedList
      */
     public function first()
     {
-        return $this->head !== null ? $this->head->data : null;
+        return $this->head !== null ? $this->head->getData() : null;
     }
 
     /**
@@ -163,10 +188,10 @@ class SortedLinkedList
         }
 
         $current = $this->head;
-        while ($current->next !== null) {
-            $current = $current->next;
+        while ($current->getNext() !== null) {
+            $current = $current->getNext();
         }
-        return $current->data;
+        return $current->getData();
     }
 
     /**
@@ -178,6 +203,7 @@ class SortedLinkedList
     {
         $this->head = null;
         $this->size = 0;
+        $this->dataType = null;
     }
 
     /**
@@ -190,8 +216,8 @@ class SortedLinkedList
         $result = [];
         $current = $this->head;
         while ($current !== null) {
-            $result[] = $current->data;
-            $current = $current->next;
+            $result[] = $current->getData();
+            $current = $current->getNext();
         }
         return $result;
     }
@@ -205,8 +231,8 @@ class SortedLinkedList
     {
         $current = $this->head;
         while ($current !== null) {
-            yield $current->data;
-            $current = $current->next;
+            yield $current->getData();
+            $current = $current->getNext();
         }
     }
 

@@ -1,4 +1,4 @@
-.PHONY: help build up down shell test install clean coverage
+.PHONY: help build up down shell test install clean coverage phpstan phpcs phpcbf check
 
 help: ## Show this help message
 	@echo 'Usage: make [target]'
@@ -55,3 +55,20 @@ composer: ## Run arbitrary composer command (usage: make composer CMD="require p
 
 phpunit: ## Run arbitrary phpunit command (usage: make phpunit CMD="--filter testName")
 	docker-compose run --rm test vendor/bin/phpunit $(CMD)
+
+phpstan: ## Run PHPStan static analysis
+	docker-compose run --rm test vendor/bin/phpstan analyse
+
+phpcs: ## Run PHP_CodeSniffer to check coding standards
+	docker-compose run --rm test vendor/bin/phpcs
+
+phpcbf: ## Run PHP Code Beautifier and Fixer to auto-fix coding standards
+	docker-compose run --rm test vendor/bin/phpcbf
+
+check: ## Run all quality checks (PHPStan, PHPCS, PHPUnit)
+	@echo "Running PHPStan..."
+	@docker-compose run --rm test vendor/bin/phpstan analyse
+	@echo "\nRunning PHPCS..."
+	@docker-compose run --rm test vendor/bin/phpcs
+	@echo "\nRunning PHPUnit..."
+	@docker-compose run --rm test vendor/bin/phpunit

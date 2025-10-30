@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<ruleset name="SortedLinkedList">
+    <description>Coding standards for PHP SortedLinkedList</description>
+
+    <!-- Include the PSR-12 coding standard -->
+    <rule ref="PSR12"/>
+
+    <!-- Paths to check -->
+    <file>src</file>
+    <file>tests</file>
+
+    <!-- Exclude vendor directory -->
+    <exclude-pattern>vendor/*</exclude-pattern>
+    <exclude-pattern>coverage/*</exclude-pattern>
+
+    <!-- Show progress and colors -->
+    <arg value="p"/>
+    <arg name="colors"/>
+
+    <!-- Show sniff codes in all reports -->
+    <arg value="s"/>
+
+    <!-- Additional rules -->
+    <rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
+    <rule ref="Generic.Formatting.SpaceAfterCast"/>
+    <rule ref="Generic.PHP.ForbiddenFunctions">
+        <properties>
+            <property name="forbiddenFunctions" type="array">
+                <element key="var_dump" value="null"/>
+                <element key="print_r" value="null"/>
+                <element key="dd" value="null"/>
+                <element key="dump" value="null"/>
+            </property>
+        </properties>
+    </rule>
+
+    <!-- Relax some strict rules for tests -->
+    <rule ref="PSR1.Methods.CamelCapsMethodName.NotCamelCaps">
+        <exclude-pattern>tests/*</exclude-pattern>
+    </rule>
+
+    <!-- Disable space after function check -->
+    <rule ref="Squiz.Functions.MultiLineFunctionDeclaration">
+        <exclude name="Squiz.Functions.MultiLineFunctionDeclaration.SpaceAfterFunction"/>
+    </rule>
+    <!-- Disable enforcement of line lengths -->
+    <rule ref="Generic.Files.LineLength">
+        <exclude name="Generic.Files.LineLength.TooLong"/>
+    </rule>
+</ruleset>

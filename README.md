@@ -212,6 +212,17 @@ Or without Make:
 docker-compose run --rm test
 ```
 
+### Code Quality
+
+Run code quality checks:
+
+```bash
+make check          # Run all checks (PHPStan + PHPCS + PHPUnit)
+make phpstan        # Run static analysis
+make phpcs          # Check coding standards
+make phpcbf         # Auto-fix coding standards
+```
+
 ### Available Make Commands
 
 ```bash
@@ -224,6 +235,10 @@ make shell          # Open shell in PHP container
 make test           # Run PHPUnit tests
 make coverage       # Generate HTML coverage report
 make coverage-text  # Show coverage in terminal
+make phpstan        # Run PHPStan static analysis
+make phpcs          # Run PHP_CodeSniffer
+make phpcbf         # Auto-fix coding standards
+make check          # Run all quality checks
 make install        # Install composer dependencies
 make update         # Update composer dependencies
 make clean          # Clean up containers and generated files
@@ -258,11 +273,48 @@ Run a specific test:
 docker-compose run --rm test vendor/bin/phpunit --filter testInsertMultipleElements
 ```
 
+Run PHPStan:
+```bash
+docker-compose run --rm test vendor/bin/phpstan analyse
+```
+
+Run PHPCS:
+```bash
+docker-compose run --rm test vendor/bin/phpcs
+```
+
+Auto-fix coding standards:
+```bash
+docker-compose run --rm test vendor/bin/phpcbf
+```
+
 ### Docker Architecture
 
 - **Dockerfile**: Production-ready image with minimal dependencies
 - **Dockerfile.dev**: Development image with PHPUnit and Xdebug for testing and coverage
 - **docker-compose.yml**: Service orchestration for development environment
+
+## Code Quality Tools
+
+### PHPStan
+
+PHPStan performs static analysis at the maximum level to catch bugs before runtime.
+
+Configuration: [phpstan.neon](phpstan.neon)
+
+### PHP_CodeSniffer
+
+PHPCS enforces PSR-12 coding standards with additional rules.
+
+Configuration: [phpcs.xml](phpcs.xml)
+
+Key standards enforced:
+- PSR-12 coding style
+- No long array syntax (use `[]` not `array()`)
+- Space after type casts
+- No debug functions (var_dump, print_r, etc.)
+
+Use `phpcbf` to automatically fix most coding standard violations.
 
 ## License
 

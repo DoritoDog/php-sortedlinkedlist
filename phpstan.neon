@@ -1,0 +1,9 @@
+parameters:
+    level: max
+    paths:
+        - src
+    excludePaths:
+        - vendor
+    checkMissingIterableValueType: false
+    reportUnmatchedIgnoredErrors: false
+    treatPhpDocTypesAsCertain: false
