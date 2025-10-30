@@ -1,0 +1,40 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Docker
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Dependencies (will be installed in container)
+vendor/
+
+# Test artifacts
+coverage/
+.phpunit.result.cache
+
+# Documentation
+*.md
+!composer.json
+!composer.lock
+
+# CI/CD
+.github
+.gitlab-ci.yml
+.travis.yml
+
+# Logs
+*.log

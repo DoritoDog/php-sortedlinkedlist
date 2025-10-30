@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: php-sortedlinkedlist
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: tail -f /dev/null
+    stdin_open: true
+    tty: true
+
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: php-sortedlinkedlist-test
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: vendor/bin/phpunit
+    depends_on:
+      - php

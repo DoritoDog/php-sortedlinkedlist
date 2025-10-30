@@ -1,0 +1,39 @@
+FROM php:8.2-cli-alpine
+
+# Install dependencies
+RUN apk add --update linux-headers
+RUN apk add --no-cache \
+    git \
+    unzip \
+    libzip-dev \
+    && docker-php-ext-install zip
+
+# Install Xdebug for code coverage
+RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS \
+    && pecl install xdebug \
+    && docker-php-ext-enable xdebug \
+    && apk del .build-deps
+
+# Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Set working directory
+WORKDIR /app
+
+# Copy composer files
+COPY composer.json composer.lock* ./
+
+# Install all dependencies including dev dependencies
+RUN composer install --prefer-dist
+
+# Copy application files
+COPY . .
+
+# Set proper permissions
+RUN chown -R www-data:www-data /app
+
+# Switch to non-root user
+USER www-data
+
+# Default command runs tests
+CMD ["vendor/bin/phpunit"]
