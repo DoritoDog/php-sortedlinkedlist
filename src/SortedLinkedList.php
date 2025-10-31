@@ -10,14 +10,14 @@ use InvalidArgumentException;
 class SortedLinkedList
 {
     /**
-     * @var Node|null The head of the linked list
+     * The head of the linked list
      */
-    private $head;
+    private Node|null $head;
 
     /**
-     * @var int The number of elements in the list
+     * The number of elements in the list
      */
-    private $size;
+    private int $size;
 
     /**
      * @var callable|null Custom comparison function
@@ -25,9 +25,9 @@ class SortedLinkedList
     private $comparator;
 
     /**
-     * @var string|null The type of data stored in the list ('integer' or 'string')
+     * The type of data stored in the list ('integer' or 'string')
      */
-    private $dataType;
+    private string|null $dataType = null;
 
     /**
      * SortedLinkedList constructor

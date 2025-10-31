@@ -9,15 +9,9 @@ use InvalidArgumentException;
  */
 class Node
 {
-    /**
-     * @var int|string The data stored in this node
-     */
-    private $data;
+    private int|string $data;
 
-    /**
-     * @var Node|null Reference to the next node
-     */
-    private $next;
+    private Node|null $next;
 
     /**
      * Node constructor
@@ -45,7 +39,7 @@ class Node
      *
      * @return int|string The data
      */
-    public function getData()
+    public function getData(): int|string
     {
         return $this->data;
     }
